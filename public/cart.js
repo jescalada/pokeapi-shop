@@ -1,4 +1,6 @@
 let userId = 1;
+var subtotal = 0;
+var taxRate = 0.06;
 
 async function loadPokemonById(pokemonId) {
     const pokemon = await $.get(`/pokemon/${pokemonId}/`, function (pokemon, status) {
@@ -19,12 +21,13 @@ async function loadPokemonToDOM(pokemonId, quantity) {
                 <h3 class="col card-price">${pokemon.name}</h3>
                 <h3 class="col card-price">$${pokemon.price}</h3>
                 <h3 class="col card-quantity" id="card-quantity-${pokemon.id}">Qty: ${quantity}</h3>
-                <h3 class="col card-quantity"> Total: $${pokemon.price * quantity}</h3>
+                <h3 class="col card-total-price"> Total: $${(pokemon.price * quantity).toFixed(2)}</h3>
                 <button class="col add-to-cart-button" onclick="removeFromCart(${pokemon.id})">Remove</button>
             </div>
         </div>
     `
     $("#cart").append(entry)
+    subtotal += parseFloat(pokemon.price) * parseInt(quantity);
 }
 
 function loadCart() {
@@ -39,9 +42,13 @@ function loadCart() {
             'Content-type': 'application/json'
         }
     }).then(response => response.json()).then((data) => {
+        subtotal = 0;
         data.cart.forEach(async (pokemon) => {
             await loadPokemonToDOM(pokemon.pokemonId, pokemon.quantity)
-        });
+            $("#subtotal").text(subtotal.toFixed(2))
+            $("#tax").text((subtotal * taxRate).toFixed(2))
+            $("#total").text((subtotal * taxRate + subtotal).toFixed(2))
+        })
     });
 }
 

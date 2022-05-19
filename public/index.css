@@ -236,3 +236,12 @@ i:hover {
     margin: 1rem;
     padding: 1rem;
 }
+
+.cost {
+    font-size: 1.5rem;
+    margin: 0 1rem;
+}
+
+.card-total-price {
+    margin: 0 2rem;
+}
