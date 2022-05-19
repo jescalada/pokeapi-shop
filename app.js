@@ -6,6 +6,8 @@ const path = require('path')
 const app = express()
 const port = process.env.PORT || 3000
 
+app.use(bodyparser.json())
+
 app.use(bodyparser.urlencoded({
     extended: true
 }))
@@ -20,14 +22,18 @@ const pokemonSchema = new mongoose.Schema({
     id: Number,
     stats: [Object],
     sprite: String
-}, { collection: 'pokemon' })
+}, {
+    collection: 'pokemon'
+})
 
 const pokemonModel = mongoose.model("pokemon", pokemonSchema);
 
 const timelineSchema = new mongoose.Schema({
     query: String,
     timestamp: Date
-}, { collection: 'timeline' })
+}, {
+    collection: 'timeline'
+})
 
 const timelineModel = mongoose.model("timeline", timelineSchema);
 
@@ -36,9 +42,13 @@ const usersSchema = new mongoose.Schema({
     username: String,
     password: String,
     cart: [Object],
-    past_orders: [[Object]],
+    past_orders: [
+        [Object]
+    ],
     timeline: [Object]
-}, { collection: 'users' })
+}, {
+    collection: 'users'
+})
 
 const usersModel = mongoose.model("users", usersSchema);
 
@@ -52,7 +62,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/pokemon/:pokemonId', (req, res) => {
-    pokemonModel.find({ id: req.params.pokemonId }, function (err, pokemon) {
+    pokemonModel.find({
+        id: req.params.pokemonId
+    }, function (err, pokemon) {
         if (err) {
             console.log("Error " + err)
         }
@@ -127,25 +139,27 @@ app.get('/timeline', (req, res) => {
     })
 })
 
-app.post('/addtocart', (req, res) => {
-    updateCart(req.body.userId, req.body.quantity, req.body.pokemonId)
+app.post('/addtocart', async (req, res) => {
+    res.json(await updateCart(req.body.userId, req.body.quantity, req.body.pokemonId))
 })
 
 app.listen(port, () => {
-  console.log(`Listening on port ${port}`)
+    console.log(`Listening on port ${port}`)
 })
 
-function updateCart(userId, quantity, pokemonId) {
-    usersModel.updateOne({userId: userId}, { $push: { cart: { quantity: quantity, pokemonId: pokemonId } } },
-        function(err, res) {
-            if (err) {
-                res.json({
-                    success: false
-                })
-            } else {
-                res.json({
-                    success: true
-                })    
+async function updateCart(userId, quantity, pokemonId) {
+    await usersModel.updateOne({
+            userId: userId
+        }, {
+            $push: {
+                cart: {
+                    quantity: quantity,
+                    pokemonId: pokemonId
+                }
+            }
+        }).then(() => {
+            return {
+                success: true
             }
         })
 }
