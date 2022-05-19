@@ -38,18 +38,8 @@
         <p class="cost">Subtotal: $<span id="subtotal"></span></p>
         <p class="cost">Tax: $<span id="tax"></span></p>
         <p class="cost">Total: $<span id="total"></span></p>
-        <div class="row" id="cart">
-            <div class="row">
-                <div class="thumbnail-container">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/18.png" alt="${pokemon.name}" style="width:100%"
-                        onclick="location.href='pokemon.html?id=${pokemon.id}'" class="pokemon-image-thumb">
-                </div>
-                <div class="row pokemon-buy-details">
-                    <h3 class="col card-price">$4.50</h3>
-                    <h3 class="col card-quantity" id="card-quantity-${pokemon.id}">Qty: 1</h3>
-                    <button class="col add-to-cart-button" onclick="removeFromCart(${pokemon.id})">Remove</button>
-                </div>
-            </div>
+        <div id="cart">
+            
         </div>
     </main>
 
