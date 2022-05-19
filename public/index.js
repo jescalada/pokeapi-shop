@@ -79,8 +79,6 @@ function addToCart(pokemonId) {
     }).then(response => {
         alert(`Added to cart!`)
     });
-
-
 }
 
 displayPokemonOnFront();

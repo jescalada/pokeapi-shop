@@ -2,6 +2,9 @@ const express = require('express')
 const bodyparser = require("body-parser")
 const mongoose = require('mongoose')
 const path = require('path')
+const {
+    getEnabledCategories
+} = require('trace_events')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -38,7 +41,7 @@ const timelineSchema = new mongoose.Schema({
 const timelineModel = mongoose.model("timeline", timelineSchema);
 
 const usersSchema = new mongoose.Schema({
-    user_id: Number,
+    user_id: String,
     username: String,
     password: String,
     cart: [Object],
@@ -147,19 +150,26 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
 
+app.post('/cart', async (req, res) => {
+    const user = await usersModel.find({
+        user_id: req.body.userId
+    })
+    return res.json(user[0]);
+})
+
 async function updateCart(userId, quantity, pokemonId) {
     await usersModel.updateOne({
-            userId: userId
-        }, {
-            $push: {
-                cart: {
-                    quantity: quantity,
-                    pokemonId: pokemonId
-                }
+        userId: userId
+    }, {
+        $push: {
+            cart: {
+                quantity: quantity,
+                pokemonId: pokemonId
             }
-        }).then(() => {
-            return {
-                success: true
-            }
-        })
+        }
+    }).then(() => {
+        return {
+            success: true
+        }
+    })
 }
