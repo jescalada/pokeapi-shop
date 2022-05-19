@@ -31,6 +31,17 @@ const timelineSchema = new mongoose.Schema({
 
 const timelineModel = mongoose.model("timeline", timelineSchema);
 
+const usersSchema = new mongoose.Schema({
+    user_id: Number,
+    username: String,
+    password: String,
+    cart: [Object],
+    past_orders: [[Object]],
+    timeline: [Object]
+}, { collection: 'users' })
+
+const usersModel = mongoose.model("users", usersSchema);
+
 mongoose.connect("mongodb+srv://juan:Rocco123@cluster0.nxfhi.mongodb.net/pokemon-db?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -116,6 +127,25 @@ app.get('/timeline', (req, res) => {
     })
 })
 
+app.post('/addtocart', (req, res) => {
+    updateCart(req.body.userId, req.body.quantity, req.body.pokemonId)
+})
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
+
+function updateCart(userId, quantity, pokemonId) {
+    usersModel.updateOne({userId: userId}, { $push: { cart: { quantity: quantity, pokemonId: pokemonId } } },
+        function(err, res) {
+            if (err) {
+                res.json({
+                    success: false
+                })
+            } else {
+                res.json({
+                    success: true
+                })    
+            }
+        })
+}
