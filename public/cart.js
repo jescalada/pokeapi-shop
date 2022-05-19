@@ -1,5 +1,19 @@
 let userId = 1;
 
+async function loadPokemonById(pokemonId) {
+    const pokemon = await $.get(`/pokemon/${pokemonId}/`, function (pokemon, status) {
+
+    })
+    return pokemon[0]
+}
+
+async function loadPokemonToDOM(pokemonId, quantity) {
+    let pokemonData = await loadPokemonById(pokemonId)
+    
+    $("#results").append(content)
+    console.log("Total cost: " + parseFloat(pokemonData.price) * quantity)
+}
+
 function loadCart() {
     let data = {
         userId: userId,
@@ -12,7 +26,9 @@ function loadCart() {
             'Content-type': 'application/json'
         }
     }).then(response => response.json()).then((data) => {
-        console.log(data);
+        data.cart.forEach(async (pokemon) => {
+            await loadPokemonToDOM(pokemon.pokemonId, pokemon.quantity)
+        });
     });
 }
 
