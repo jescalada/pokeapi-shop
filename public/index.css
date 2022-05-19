@@ -25,7 +25,8 @@ main {
 }
 
 .img-container,
-.info-container {
+.info-container,
+.thumbnail-container {
     padding: 0.5rem;
     border-radius: 1rem;
     border: 2px #ffb7b7 solid;
@@ -39,6 +40,11 @@ main {
 
 .img-container > img, .info-container > img {
     max-width: 360px;
+    height: auto;
+}
+
+.thumbnail-container > img {
+    max-width: 120px;
     height: auto;
 }
 
@@ -224,4 +230,9 @@ i:hover {
     margin: 0 1rem;
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+.pokemon-buy-details {
+    margin: 2rem;
+    padding: 2rem;
 }
