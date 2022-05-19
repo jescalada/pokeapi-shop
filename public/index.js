@@ -22,13 +22,12 @@ async function displayPokemonOnFront() {
                         </div>
                     </div> 
                     `;
-                }
-                grid += `</div>`;
             }
             grid += `</div>`;
-            $("main").append(grid);
         }
-    );
+        grid += `</div>`;
+        $("main").append(grid);
+    });
 }
 
 function loadPokemonInfo() {
@@ -70,5 +69,30 @@ function decreaseQuantity(pokemonId) {
     quantityElement.innerHTML = Math.max(0, parseInt(quantityElement.innerHTML) - 1)
 }
 
+function addToCart(pokemonId) {
+    let quantity = parseInt(document.getElementById(`card-quantity-${pokemonId}`).innerHTML)
+
+    let data = {
+        userId: userId,
+        pokemonId: pokemonId,
+        quantity: quantity
+    }
+    
+    fetch('/addToCart', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }).then(response => response.json().then((data) => {
+        if (data.success) {
+            console.log("Successfully added to cart!");
+        } else {
+            console.log("There was an error while adding to cart!");
+        }
+    }));
+
+
+}
 
 displayPokemonOnFront();
