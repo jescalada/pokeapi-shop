@@ -1,4 +1,5 @@
 let totalNumberOfPokemon = 26;
+let userId = 1;
 
 async function displayPokemonOnFront() {
     await getRandomPokemonData().then((randomPokemon) => {
@@ -28,14 +29,6 @@ async function displayPokemonOnFront() {
         grid += `</div>`;
         $("main").append(grid);
     });
-}
-
-function loadPokemonInfo() {
-
-}
-
-function getPokemonInfo() {
-
 }
 
 async function loadPokemonById(pokemonId) {
@@ -71,26 +64,21 @@ function decreaseQuantity(pokemonId) {
 
 function addToCart(pokemonId) {
     let quantity = parseInt(document.getElementById(`card-quantity-${pokemonId}`).innerHTML)
-
     let data = {
         userId: userId,
         pokemonId: pokemonId,
         quantity: quantity
     }
-    
-    fetch('/addToCart', {
+
+    fetch('/addtocart', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
             'Content-type': 'application/json'
         }
-    }).then(response => response.json().then((data) => {
-        if (data.success) {
-            console.log("Successfully added to cart!");
-        } else {
-            console.log("There was an error while adding to cart!");
-        }
-    }));
+    }).then(response => {
+        alert(`Added to cart!`)
+    });
 
 
 }
