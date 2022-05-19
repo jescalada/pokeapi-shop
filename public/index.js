@@ -15,7 +15,7 @@ async function displayPokemonOnFront() {
                         <img src="${randomPokemon[index].sprite}" alt="${randomPokemon[index].name}" style="width:100%"
                             onclick="location.href='pokemon.html?id=${randomPokemon[index].id}'" class="pokemon-image">
                         <div class="pokemon-buy-panel row">
-                            <h3 class="col card-price">$4.50</h3>
+                            <h3 class="col card-price">$${randomPokemon[index].price}</h3>
                             <button class="col card-quantity-button" onclick="decreaseQuantity(${randomPokemon[index].id})">-</button>
                             <h3 class="col card-quantity" id="card-quantity-${randomPokemon[index].id}">1</h3>
                             <button class="col card-quantity-button" onclick="increaseQuantity(${randomPokemon[index].id})">+</button>
@@ -46,7 +46,8 @@ async function getRandomPokemonData() {
         pokemonList[i] = {
             id: randomPokemon['id'],
             name: randomPokemon['name'],
-            sprite: randomPokemon['sprite']
+            sprite: randomPokemon['sprite'],
+            price: randomPokemon['price']
         };
     }
     return pokemonList;

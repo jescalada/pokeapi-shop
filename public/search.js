@@ -1,3 +1,5 @@
+var userId = 1;
+
 async function loadPokemonById(pokemonId) {
     try {
         const pokemon = await $.get(`/pokemon/${pokemonId}/`, function (pokemon, status) {});
@@ -57,9 +59,10 @@ async function loadTimeline() {
 async function getPokemonBasicData(name) {
     let pokemon = await loadPokemonByName(name);
     let result = {
-        id: pokemon['id'],
-        name: pokemon['name'],
-        sprite: pokemon.sprite
+        id: pokemon.id,
+        name: pokemon.name,
+        sprite: pokemon.sprite,
+        price: pokemon.price
     };
     return result;
 }
@@ -68,9 +71,10 @@ async function getPokemonBasicData(name) {
 async function getPokemonBasicDataById(id) {
     let pokemon = await loadPokemonById(id);
     let result = {
-        id: pokemon['id'],
-        name: pokemon['name'],
-        sprite: pokemon.sprite
+        id: pokemon.id,
+        name: pokemon.name,
+        sprite: pokemon.sprite,
+        price: pokemon.price
     };
     return result;
 }
@@ -86,10 +90,18 @@ async function searchByName(name=$("#search-box").val()) {
             for (col = 0; col < 1; col++) {
                 index = 0;
                 grid += `
-            <div class="img-container" onclick="location.href='pokemon.html?id=${pokemon.id}'">
-                <img src="${pokemon.sprite}" alt="${pokemon.name}" style="width:100%">
-            </div> 
-            `;
+                    <div class="img-container">
+                        <img src="${pokemon.sprite}" alt="${pokemon.name}" style="width:100%"
+                            onclick="location.href='pokemon.html?id=${pokemon.id}'" class="pokemon-image">
+                        <div class="pokemon-buy-panel row">
+                            <h3 class="col card-price">$${pokemon.price}</h3>
+                            <button class="col card-quantity-button" onclick="decreaseQuantity(${pokemon.id})">-</button>
+                            <h3 class="col card-quantity" id="card-quantity-${pokemon.id}">1</h3>
+                            <button class="col card-quantity-button" onclick="increaseQuantity(${pokemon.id})">+</button>
+                            <button class="col add-to-cart-button" onclick="addToCart(${pokemon.id})">Add To Cart</button>
+                        </div>
+                    </div> 
+                    `;
             }
             grid += `</div>`;
         }
@@ -117,10 +129,18 @@ async function searchByAbility(ability=$("#search-box").val()) {
             pokemonJSON = resultList[index++];
             await getPokemonBasicDataById(pokemonJSON.id).then((pokemon) => {
                 grid += `
-                <div class="img-container" onclick="location.href='pokemon.html?id=${pokemon.id}'">
-                    <img src="${pokemon.sprite}" alt="${pokemon.name}" style="width:100%">
-                </div>
-                `;
+                    <div class="img-container">
+                        <img src="${pokemon.sprite}" alt="${pokemon.name}" style="width:100%"
+                            onclick="location.href='pokemon.html?id=${pokemon.id}'" class="pokemon-image">
+                        <div class="pokemon-buy-panel row">
+                            <h3 class="col card-price">$${pokemon.price}</h3>
+                            <button class="col card-quantity-button" onclick="decreaseQuantity(${pokemon.id})">-</button>
+                            <h3 class="col card-quantity" id="card-quantity-${pokemon.id}">1</h3>
+                            <button class="col card-quantity-button" onclick="increaseQuantity(${pokemon.id})">+</button>
+                            <button class="col add-to-cart-button" onclick="addToCart(${pokemon.id})">Add To Cart</button>
+                        </div>
+                    </div> 
+                    `;
             })
         }
         grid += `</div>`;
@@ -148,10 +168,18 @@ async function searchByType(type=$("#search-box").val()) {
             pokemonJSON = resultList[index++];
             await getPokemonBasicDataById(pokemonJSON.id).then((pokemon) => {
                 grid += `
-                <div class="img-container" onclick="location.href='pokemon.html?id=${pokemon.id}'">
-                    <img src="${pokemon.sprite}" alt="${pokemon.name}" style="width:100%">
-                </div>
-                `;
+                    <div class="img-container">
+                        <img src="${pokemon.sprite}" alt="${pokemon.name}" style="width:100%"
+                            onclick="location.href='pokemon.html?id=${pokemon.id}'" class="pokemon-image">
+                        <div class="pokemon-buy-panel row">
+                            <h3 class="col card-price">$${pokemon.price}</h3>
+                            <button class="col card-quantity-button" onclick="decreaseQuantity(${pokemon.id})">-</button>
+                            <h3 class="col card-quantity" id="card-quantity-${pokemon.id}">1</h3>
+                            <button class="col card-quantity-button" onclick="increaseQuantity(${pokemon.id})">+</button>
+                            <button class="col add-to-cart-button" onclick="addToCart(${pokemon.id})">Add To Cart</button>
+                        </div>
+                    </div> 
+                    `;
             })
         }
         grid += `</div>`;
@@ -185,6 +213,35 @@ async function parseQuery(query) {
     } else {
         console.log("Error parsing the query routes!")
     }
+}
+
+function increaseQuantity(pokemonId) {
+    let quantityElement = document.getElementById(`card-quantity-${pokemonId}`);
+    quantityElement.innerHTML = parseInt(quantityElement.innerHTML) + 1
+}
+
+function decreaseQuantity(pokemonId) {
+    let quantityElement = document.getElementById(`card-quantity-${pokemonId}`);
+    quantityElement.innerHTML = Math.max(0, parseInt(quantityElement.innerHTML) - 1)
+}
+
+function addToCart(pokemonId) {
+    let quantity = parseInt(document.getElementById(`card-quantity-${pokemonId}`).innerHTML)
+    let data = {
+        userId: userId,
+        pokemonId: pokemonId,
+        quantity: quantity
+    }
+
+    fetch('/addtocart', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }).then(response => {
+        alert(`Added to cart!`)
+    });
 }
 
 loadTimelineHandler();
