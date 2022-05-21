@@ -37,8 +37,25 @@
     <main>
         <div class="row">
             <p>
-                Welcome to Poke-info! Search a pokemon by using the search bar above, or click on one of the pokemon below to see their info.
+                Welcome to Poke-info! Please Log in with your credentials below, or Register to create a new account.
             </p>
+        </div>
+        <div class="row">
+            <form action="/login" method="post">
+                <div>
+                    <div class="col">
+                        <label for="email">Username</label>
+                        <input type="email" class="form" id="email" name="email"
+                            placeholder="Username" required>
+                    </div>
+                    <div class="col">
+                        <label for="password">Password</label>
+                        <input type="password" class="form" id="password" name="password"
+                            placeholder="Password" required>
+                    </div>
+                    <button type="button" onclick="login()" class="button">Log in</button>
+                    <button type="button" onclick="registerAccount()" class="button">Register</button>
+            </form>
         </div>
     </main>
 
@@ -58,6 +75,6 @@
         <div class="footer-copyright">© 2022 <a href="/">Juan Escalada</a>
         </div>
     </footer>
-    <script src="index.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>
