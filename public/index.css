@@ -204,7 +204,7 @@ i:hover {
     cursor: pointer;
 }
 
-.card-quantity-button {
+.card-quantity-button, .button {
     padding: 0.5rem;
     border: 3px black solid;
     color: white;
@@ -244,4 +244,10 @@ i:hover {
 
 .card-total-price {
     margin: 0 2rem;
+}
+
+.form {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 10rem;
 }

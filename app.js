@@ -9,7 +9,15 @@ const {
 const app = express()
 const port = process.env.PORT || 3000
 
+const session = require('express-session')
+
 app.use(bodyparser.json())
+
+app.use(session({
+    secret: "secret",
+    saveUninitialized: true,
+    resave: true
+}))
 
 app.use(bodyparser.urlencoded({
     extended: true
@@ -61,7 +69,18 @@ mongoose.connect("mongodb+srv://juan:Rocco123@cluster0.nxfhi.mongodb.net/pokemon
 });
 
 app.get('/', (req, res) => {
-    res.sendFile('public/index.html')
+    console.log("Authenticated!")
+    if (req.session.authenticated) {
+        console.log("Authenticated!")
+        res.sendFile(__dirname + '/public/landing.html')
+    } else {
+        console.log("Not Authenticated!")
+        res.redirect('/login')
+    }
+})
+
+app.get('/login', (req, res) => {
+    res.sendFile(__dirname + '/public/login.html')
 })
 
 app.get('/pokemon/:pokemonId', (req, res) => {
