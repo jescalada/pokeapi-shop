@@ -48,7 +48,27 @@ function loadCart() {
             $("#subtotal").text(subtotal.toFixed(2))
             $("#tax").text((subtotal * taxRate).toFixed(2))
             $("#total").text((subtotal * taxRate + subtotal).toFixed(2))
-        })
+        }) 
+    });
+    
+}
+
+function placeOrder() {
+    let total = $("#total").text();
+    console.log(total)
+
+    let data = {
+        userId: userId,
+        total: total
+    }
+    fetch('/placeorder', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }).then(response => response.json()).then((data) => {
+        console.log(data); 
     });
 }
 
