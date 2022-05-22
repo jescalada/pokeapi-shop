@@ -1,6 +1,18 @@
-let userId = 1;
+let userId = getUserId();
 var subtotal = 0;
 var taxRate = 0.06;
+
+// Gets the basic data needed to display a pokemon to the client.
+async function getPokemonBasicDataById(id) {
+    let pokemon = await loadPokemonById(id);
+    let result = {
+        id: pokemon.id,
+        name: pokemon.name,
+        sprite: pokemon.sprite,
+        price: pokemon.price
+    };
+    return result;
+}
 
 async function loadPokemonById(pokemonId) {
     const pokemon = await $.get(`/pokemon/${pokemonId}/`, function (pokemon, status) {
@@ -67,9 +79,56 @@ function placeOrder() {
         headers: {
             'Content-type': 'application/json'
         }
-    }).then(response => response.json()).then((data) => {
-        console.log(data); 
+    }).then(response => {
+        window.location.html = '/profile' 
     });
 }
 
+
+async function loadPastOrders() {
+    let data = {
+        userId: userId,
+    }
+
+    fetch('/cart', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }).then(response => response.json()).then(async (data) => {
+            data.past_orders.forEach(async (order, index) => {
+                let date = new Date(order[0].timestamp)
+                let dateTime = date.toString().split("GMT")
+                let element = `
+                    <div class="order" id="order-${index + 1}" style="text-align: center">
+                        <h3>Order id: #${index + 1}</h3>    
+                        <h2>${dateTime[0]}</h2>
+                        <p class="details">Total: $${order[0].total}</p>
+                        <h4>Items in Order #${index + 1}:</h4>
+                    </div>`;
+                $("#past-orders").append(element);
+
+                order[0].cart.forEach(async (pokemon) => {
+                    let pokemonData = await getPokemonBasicDataById(pokemon.pokemonId)
+                    console.log(pokemonData);
+                    let entry = `
+                    <div class="thumbnail-container" style="text-align: center; display: inline-block">
+                        <img src="${pokemonData.sprite}" alt="${pokemonData.name}" style="width:100%"
+                            onclick="location.href='pokemon.html?id=${pokemonData.id}'" class="pokemon-image-thumb">
+                            <div class="row pokemon-buy-details">
+                            <h3 class="col card-price">${pokemonData.name}</h3>
+                            <h3 class="col card-price">$${pokemonData.price}</h3>
+                            <h3 class="col card-quantity" id="card-quantity-${pokemonData.id}">Qty: ${pokemon.quantity}</h3>
+                            <h3 class="col card-total-price"> Total: $${(pokemonData.price * pokemon.quantity).toFixed(2)}</h3>
+                        </div>
+                    </div>
+                    `;
+                    $(`#order-${index + 1}`).append(entry);
+                })
+            });
+        });
+}
+
+loadPastOrders();
 loadCart();
