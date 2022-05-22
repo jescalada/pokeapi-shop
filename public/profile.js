@@ -34,14 +34,13 @@ async function loadProfile() {
         }
     }).then(response => response.json()).then(async (data) => {
             $("#username").text(data.username);
-            data.past_orders.forEach(async order => {
-                let dateTime = order[0].timestamp.split("T");
+            data.past_orders.forEach(async (order, index) => {
                 let element = `
-                    <div class="order" id="order-${order[0].order_id}" style="text-align: center">
-                        <h3>Order id: #${order[0].order_id}</h3>    
-                        <h2>${dateTime[0]} ${dateTime[1].slice(0, 5)}</h2>
+                    <div class="order" id="order-${index + 1}" style="text-align: center">
+                        <h3>Order id: #${index + 1}</h3>    
+                        <h2>${order[0].timestamp}</h2>
                         <p class="details">Total: ${order[0].total}</p>
-                        <h4>Items in Order #${order[0].order_id}:</h4>
+                        <h4>Items in Order #${index + 1}:</h4>
                     </div>`;
                 $("#past-orders").append(element);
 
@@ -61,7 +60,7 @@ async function loadProfile() {
                     </div>
                     
                     `;
-                    $(`#order-${order[0].order_id}`).append(entry);
+                    $(`#order-${index + 1}`).append(entry);
                 })
             });
         });

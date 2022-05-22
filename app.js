@@ -205,6 +205,10 @@ app.post('/addtocart', async (req, res) => {
     res.json(await updateCart(req.body.userId, req.body.quantity, req.body.pokemonId))
 })
 
+app.post('/placeorder', async (req, res) => {
+    res.json(await placeOrder(req.body.userId, req.body.total))
+})
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
@@ -224,6 +228,40 @@ async function updateCart(userId, quantity, pokemonId) {
             cart: {
                 quantity: quantity,
                 pokemonId: pokemonId
+            }
+        }
+    }).then(() => {
+        return {
+            success: true
+        }
+    })
+}
+
+async function placeOrder(userId, total) {
+    const user = await usersModel.find({
+        userId: userId
+    })
+    let cart = user[0].cart
+    console.log(cart)
+    
+    // Empties the user's cart
+    await usersModel.updateOne({
+        userId: userId
+    }, {
+        $set: {
+            cart: []
+        }
+    }, {multi: true})
+
+    // Adds the order info to the user's past_orders array
+    await usersModel.updateOne({
+        userId: userId
+    }, {
+        $push: {
+            past_orders: {
+                cart: cart,
+                timestamp: Date.now(),
+                total: total
             }
         }
     }).then(() => {
