@@ -66,4 +66,26 @@ async function loadProfile() {
         });
 }
 
+async function loadTimeline() {
+    try {
+        const timeline = await $.get(`/timeline/${userId}`, function (timeline, status) {});
+        return timeline;
+    } catch {
+        return null;
+    }
+}
+
+async function loadTimelineHandler() {
+    const timeline = await loadTimeline()
+    $("#timeline").empty();
+    let text = ""
+    timeline.forEach(object => {
+        entry = object.entry
+        let timeData = new Date(entry.timestamp).toString().split("GMT")
+        text += `<li>Query: ${entry.query}<br>${timeData[0]}</li>`
+    });
+    $("#timeline").append(text);
+}
+
 loadProfile();
+loadTimelineHandler();
