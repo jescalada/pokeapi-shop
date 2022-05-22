@@ -33,7 +33,9 @@ async function loadProfile() {
             'Content-type': 'application/json'
         }
     }).then(response => response.json()).then(async (data) => {
-            $("#username").text(data.username);
+                $("#username").text(data.username);
+                $("#username2").text(data.username);
+                $("#username3").text(data.username);
             data.past_orders.forEach(async (order, index) => {
                 let date = new Date(order[0].timestamp)
                 let dateTime = date.toString().split("GMT")

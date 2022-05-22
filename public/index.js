@@ -71,6 +71,10 @@ function addToCart(pokemonId) {
         quantity: quantity
     }
 
+    console.log("adding to cart: " + data.userId)
+    console.log("adding to cart: " + data.pokemonId)
+    console.log("adding to cart: " + data.quantity)
+
     fetch('/addtocart', {
         method: 'POST',
         body: JSON.stringify(data),

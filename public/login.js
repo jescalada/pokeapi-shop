@@ -36,7 +36,10 @@ function register() {
         }
     }).then(response => response.json()).then((data) => {
         // On success, redirect (refresh) to login
-        console.log(data.success);
-        console.log(data.message);
+        if (data.success) {
+            $("#success-text").text("Account created. You can log in now.")
+        } else {
+            $("#error-text").text("Account creation failed.")
+        }
     })
 }
