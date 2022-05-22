@@ -1,7 +1,3 @@
-var userId;
-
-function loadUser() {
-    console.log(sessionStorage.getItem("user"))
+function getUserId() {
+    return sessionStorage.getItem("userId")
 }
-
-loadUser();

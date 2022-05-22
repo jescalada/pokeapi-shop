@@ -1,4 +1,4 @@
-var userId = 1;
+var userId = getUserId();
 
 // Gets the basic data needed to display a pokemon to the client.
 async function getPokemonBasicDataById(id) {
@@ -35,11 +35,13 @@ async function loadProfile() {
     }).then(response => response.json()).then(async (data) => {
             $("#username").text(data.username);
             data.past_orders.forEach(async (order, index) => {
+                let date = new Date(order[0].timestamp)
+                let dateTime = date.toString().split("GMT")
                 let element = `
                     <div class="order" id="order-${index + 1}" style="text-align: center">
                         <h3>Order id: #${index + 1}</h3>    
-                        <h2>${order[0].timestamp}</h2>
-                        <p class="details">Total: ${order[0].total}</p>
+                        <h2>${dateTime[0]}</h2>
+                        <p class="details">Total: $${order[0].total}</p>
                         <h4>Items in Order #${index + 1}:</h4>
                     </div>`;
                 $("#past-orders").append(element);
@@ -58,7 +60,6 @@ async function loadProfile() {
                             <h3 class="col card-total-price"> Total: $${(pokemonData.price * pokemon.quantity).toFixed(2)}</h3>
                         </div>
                     </div>
-                    
                     `;
                     $(`#order-${index + 1}`).append(entry);
                 })
