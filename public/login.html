@@ -44,8 +44,8 @@
             <form action="/login" method="post">
                 <div>
                     <div class="col">
-                        <label for="email">Username</label>
-                        <input type="email" class="form" id="email" name="email"
+                        <label for="username">Username</label>
+                        <input type="username" class="form" id="username" name="username"
                             placeholder="Username" required>
                     </div>
                     <div class="col">
@@ -53,6 +53,7 @@
                         <input type="password" class="form" id="password" name="password"
                             placeholder="Password" required>
                     </div>
+                    <p id="error-text" style="color: red;"></p>
                     <button type="button" onclick="login()" class="button">Log in</button>
                     <button type="button" onclick="registerAccount()" class="button">Register</button>
             </form>
