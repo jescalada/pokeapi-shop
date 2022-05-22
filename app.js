@@ -39,15 +39,6 @@ const pokemonSchema = new mongoose.Schema({
 
 const pokemonModel = mongoose.model("pokemon", pokemonSchema);
 
-const timelineSchema = new mongoose.Schema({
-    query: String,
-    timestamp: Date
-}, {
-    collection: 'timeline'
-})
-
-const timelineModel = mongoose.model("timeline", timelineSchema);
-
 const usersSchema = new mongoose.Schema({
     user_id: String,
     username: String,
@@ -116,6 +107,28 @@ app.post('/login', async (req, res) => {
     })
 })
 
+app.post('/register', async (req, res) => {
+    let userId = 100000000 + Math.floor(Math.random() * 10000);
+    await usersModel.insertMany({
+        username: req.body.username,
+        password: req.body.password,
+        cart: [],
+        past_orders: [],
+        user_id: userId,
+        timeline: []
+    }).then((result, err) => {
+        if (err) {
+            res.json({
+                success: false
+            })
+        } else {
+            res.json({
+                success: true
+            })
+        }
+    })
+})
+
 async function authenticateLogin(username, password) {
     const users = await usersModel.find({
         username: username,
@@ -149,7 +162,7 @@ app.get('/name/:pokemonName', async (req, res) => {
         }
 
         await usersModel.updateOne({
-            userId: req.session.user_id
+            user_id: req.session.user_id
         }, {
             $push: {
                 timeline: { entry }
@@ -176,7 +189,7 @@ app.get('/type/:pokemonType', async (req, res) => {
         }
         
         await usersModel.updateOne({
-            userId: req.session.user_id
+            user_id: req.session.user_id
         }, {
             $push: {
                 timeline: { entry }
@@ -203,7 +216,7 @@ app.get('/ability/:pokemonAbility', async (req, res) => {
         }
         
         await usersModel.updateOne({
-            userId: req.session.user_id
+            user_id: req.session.user_id
         }, {
             $push: {
                 timeline: { entry }
@@ -241,8 +254,9 @@ app.post('/cart', async (req, res) => {
 })
 
 async function updateCart(userId, quantity, pokemonId) {
-    await usersModel.updateOne({
-        userId: userId
+    console.log("Updating for user: " + userId)
+    await usersModel.findOneAndUpdate({
+        user_id: userId
     }, {
         $push: {
             cart: {
@@ -259,13 +273,13 @@ async function updateCart(userId, quantity, pokemonId) {
 
 async function placeOrder(userId, total) {
     const user = await usersModel.find({
-        userId: userId
+        user_id: userId
     })
     let cart = user[0].cart
     
     // Empties the user's cart
     await usersModel.updateOne({
-        userId: userId
+        user_id: userId
     }, {
         $set: {
             cart: []
@@ -274,7 +288,7 @@ async function placeOrder(userId, total) {
 
     // Adds the order info to the user's past_orders array
     await usersModel.updateOne({
-        userId: userId
+        user_id: userId
     }, {
         $push: {
             past_orders: {
