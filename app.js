@@ -68,16 +68,23 @@ mongoose.connect("mongodb+srv://juan:Rocco123@cluster0.nxfhi.mongodb.net/pokemon
     useUnifiedTopology: true
 });
 
-app.get('/', (req, res) => {
-    if (req.session.authenticated) {
-        console.log("Authenticated!")
-        res.sendFile(__dirname + '/public/landing.html')
-    } else {
-        console.log("Not Authenticated!")
-        res.redirect('/login')
-    }
+app.get('/', authenticate, (req, res) => {
+    res.sendFile(__dirname + '/public/landing.html')
 })
 
+app.get('/cart', authenticate, (req, res) => {
+    res.sendFile(__dirname + '/public/cart.html')
+})
+
+app.get('/search', authenticate, (req, res) => {
+    res.sendFile(__dirname + '/public/search.html')
+})
+
+app.get('/profile', authenticate, (req, res) => {
+    res.sendFile(__dirname + '/public/profile.html')
+})
+
+// This is a get route that does not need the middleware authenticator (it would make an infinite loop)
 app.get('/login', (req, res) => {
     // If they're authenticated, send them to their profile, otherwise send them to the login page
     if (req.session.authenticated) {
@@ -87,11 +94,18 @@ app.get('/login', (req, res) => {
     }
 })
 
+function authenticate(req, res, next) {
+    if (req.session.authenticated) {
+        next()
+    } else {
+        res.redirect('/login')
+    }
+}
+
 app.post('/login', async (req, res) => {
     await authenticateLogin(req.body.username, req.body.password).then(user => {
         req.session.user = user
     })
-    console.log(req.session.user)
     req.session.authenticated = req.session.user != null
     res.json({
         success: req.session.authenticated,
@@ -107,19 +121,6 @@ async function authenticateLogin(username, password) {
     })
     return users[0]
 }
-
-// POST route for registering. Adds a user to the database
-app.post('/register', (req, res) => {
-    
-})
-
-app.get('/profile', (req, res) => {
-    if (req.session.authenticated) {
-        res.sendFile(__dirname + '/public/profile.html')
-    } else {
-        res.redirect('/login')
-    }
-})
 
 app.get('/pokemon/:pokemonId', (req, res) => {
     pokemonModel.find({
