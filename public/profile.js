@@ -33,15 +33,16 @@ async function loadProfile() {
             'Content-type': 'application/json'
         }
     }).then(response => response.json()).then(async (data) => {
-        console.log(data);
             $("#username").text(data.username);
             data.past_orders.forEach(async order => {
                 let dateTime = order[0].timestamp.split("T");
                 let element = `
-                    <div class="order" id="order-${order[0].order_id}">
-                        <h2>${dateTime[0]} ${dateTime[1].slice(5)}</h2>
-                        <h3>Order id: #${order[0].order_id}</h3>`;
-                    element += `</div>`;
+                    <div class="order" id="order-${order[0].order_id}" style="text-align: center">
+                        <h3>Order id: #${order[0].order_id}</h3>    
+                        <h2>${dateTime[0]} ${dateTime[1].slice(0, 5)}</h2>
+                        <p class="details">Total: ${order[0].total}</p>
+                        <h4>Items in Order #${order[0].order_id}:</h4>
+                    </div>`;
                 $("#past-orders").append(element);
 
                 order[0].cart.forEach(async (pokemon) => {

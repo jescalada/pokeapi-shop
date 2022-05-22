@@ -13,6 +13,8 @@ function login() {
     }).then(response => response.json()).then((data) => {
         // If authentication was successful, redirect to user profile, else display an error message
         if (data.success) {
+            sessionStorage.setItem("user", data.user);
+            sessionStorage.setItem("authenticated", data.authenticated);
             window.location.href = '/profile'
         } else {
             $("#error-text").text("Invalid credentials. Please try again.")

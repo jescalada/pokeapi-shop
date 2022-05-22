@@ -94,6 +94,7 @@ app.get('/login', (req, res) => {
     }
 })
 
+// Checks if the user is authenticated, and either executes the next function or redirects to login
 function authenticate(req, res, next) {
     if (req.session.authenticated) {
         next()
