@@ -1,5 +1,5 @@
 let totalNumberOfPokemon = 26;
-let userId = 1;
+let userId = getUserId();
 
 async function displayPokemonOnFront() {
     await getRandomPokemonData().then((randomPokemon) => {

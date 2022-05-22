@@ -135,10 +135,10 @@ app.get('/pokemon/:pokemonId', (req, res) => {
     });
 })
 
-app.get('/name/:pokemonName', (req, res) => {
+app.get('/name/:pokemonName', async (req, res) => {
     pokemonModel.find({
         name: req.params.pokemonName
-    }, function (err, pokemon) {
+    }, async function (err, pokemon) {
         if (err) {
             console.log("Error: " + err)
         }
@@ -147,8 +147,16 @@ app.get('/name/:pokemonName', (req, res) => {
             query: `/name/${req.params.pokemonName}`,
             timestamp: Date.now()
         }
-        timelineModel.insertMany(entry, () => {
-            res.json(pokemon)
+
+        console.log(req.session.user_id)
+        await usersModel.updateOne({
+            userId: req.session.user_id
+        }, {
+            $push: {
+                timeline: { entry }
+            }
+        }).then(() => {
+            console.log("it werked")
         })
     });
 })
@@ -193,13 +201,11 @@ app.get('/ability/:pokemonAbility', (req, res) => {
     });
 })
 
-app.get('/timeline', (req, res) => {
-    timelineModel.find({}, (err, entries) => {
-        if (err) {
-            console.log("Error " + err)
-        }
-        res.json(entries)
+app.get('/timeline/:userId', async (req, res) => {
+    const user = await usersModel.find({
+        user_id: req.params.userId
     })
+    return res.json(user[0].timeline);
 })
 
 app.post('/addtocart', async (req, res) => {
