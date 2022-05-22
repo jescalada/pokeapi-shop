@@ -148,7 +148,6 @@ app.get('/name/:pokemonName', async (req, res) => {
             timestamp: Date.now()
         }
 
-        console.log(req.session.user_id)
         await usersModel.updateOne({
             userId: req.session.user_id
         }, {
@@ -156,17 +155,17 @@ app.get('/name/:pokemonName', async (req, res) => {
                 timeline: { entry }
             }
         }).then(() => {
-            console.log("it werked")
+            res.json(pokemon)
         })
     });
 })
 
-app.get('/type/:pokemonType', (req, res) => {
+app.get('/type/:pokemonType', async (req, res) => {
     pokemonModel.find({
         types: {
             $in: req.params.pokemonType
         }
-    }, function (err, pokemon) {
+    }, async function (err, pokemon) {
         if (err) {
             console.log("Error " + err)
         }
@@ -175,18 +174,25 @@ app.get('/type/:pokemonType', (req, res) => {
             query: `/type/${req.params.pokemonType}`,
             timestamp: Date.now()
         }
-        timelineModel.insertMany(entry, () => {
+        
+        await usersModel.updateOne({
+            userId: req.session.user_id
+        }, {
+            $push: {
+                timeline: { entry }
+            }
+        }).then(() => {
             res.json(pokemon)
         })
     });
 })
 
-app.get('/ability/:pokemonAbility', (req, res) => {
+app.get('/ability/:pokemonAbility', async (req, res) => {
     pokemonModel.find({
         abilities: {
             $in: req.params.pokemonAbility
         }
-    }, function (err, pokemon) {
+    }, async function (err, pokemon) {
         if (err) {
             console.log("Error " + err)
         }
@@ -195,7 +201,14 @@ app.get('/ability/:pokemonAbility', (req, res) => {
             query: `/ability/${req.params.pokemonAbility}`,
             timestamp: Date.now()
         }
-        timelineModel.insertMany(entry, () => {
+        
+        await usersModel.updateOne({
+            userId: req.session.user_id
+        }, {
+            $push: {
+                timeline: { entry }
+            }
+        }).then(() => {
             res.json(pokemon)
         })
     });

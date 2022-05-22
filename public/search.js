@@ -49,7 +49,6 @@ async function loadPokemonListByAbility(ability) {
 async function loadTimeline() {
     try {
         const timeline = await $.get(`/timeline/${userId}`, function (timeline, status) {});
-        console.log("timeline: " + timeline)
         return timeline;
     } catch {
         return null;
@@ -82,7 +81,7 @@ async function getPokemonBasicDataById(id) {
 
 // Searches a pokemon by name and appends it to the DOM if it exists
 async function searchByName(name=$("#search-box").val()) {
-    await getPokemonBasicData(name).then((pokemon) => {
+    const pokemon = await getPokemonBasicData(name)
         let grid = `
             <div id="grid">
             `;
@@ -108,8 +107,7 @@ async function searchByName(name=$("#search-box").val()) {
         }
         grid += `</div>`;
         $("#results").html(grid);
-    });
-
+    
     loadTimelineHandler();
 }
 
@@ -192,16 +190,15 @@ async function searchByType(type=$("#search-box").val()) {
 }
 
 async function loadTimelineHandler() {
-    await loadTimeline().then((timeline) => {
-        $("#timeline").empty();
-        let text = ""
-        timeline.forEach(object => {
-            entry = object.entry
-            let timeData = new Date(entry.timestamp).toString().split("GMT")
-            text += `<li onclick="parseQuery('${entry.query}')">Query: ${entry.query}<br>${timeData[0]}</li>`
-        });
-        $("#timeline").append(text);
-    })
+    const timeline = await loadTimeline()
+    $("#timeline").empty();
+    let text = ""
+    timeline.forEach(object => {
+        entry = object.entry
+        let timeData = new Date(entry.timestamp).toString().split("GMT")
+        text += `<li onclick="parseQuery('${entry.query}')">Query: ${entry.query}<br>${timeData[0]}</li>`
+    });
+    $("#timeline").append(text);
 }
 
 async function parseQuery(query) {
