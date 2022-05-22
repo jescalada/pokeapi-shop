@@ -55,6 +55,7 @@ function loadCart() {
         }
     }).then(response => response.json()).then((data) => {
         subtotal = 0;
+        $("#cart-item-count").text(data.cart.length)
         data.cart.forEach(async (pokemon) => {
             await loadPokemonToDOM(pokemon.pokemonId, pokemon.quantity)
             $("#subtotal").text(subtotal.toFixed(2))
@@ -67,7 +68,6 @@ function loadCart() {
 
 function placeOrder() {
     let total = $("#total").text();
-    console.log(total)
 
     let data = {
         userId: userId,
@@ -80,7 +80,7 @@ function placeOrder() {
             'Content-type': 'application/json'
         }
     }).then(response => {
-        window.location.html = '/profile' 
+        window.location.href = '/profile'
     });
 }
 
@@ -111,7 +111,6 @@ async function loadPastOrders() {
 
                 order[0].cart.forEach(async (pokemon) => {
                     let pokemonData = await getPokemonBasicDataById(pokemon.pokemonId)
-                    console.log(pokemonData);
                     let entry = `
                     <div class="thumbnail-container" style="text-align: center; display: inline-block">
                         <img src="${pokemonData.sprite}" alt="${pokemonData.name}" style="width:100%"

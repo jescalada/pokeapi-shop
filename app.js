@@ -243,7 +243,6 @@ async function placeOrder(userId, total) {
         userId: userId
     })
     let cart = user[0].cart
-    console.log(cart)
     
     // Empties the user's cart
     await usersModel.updateOne({

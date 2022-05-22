@@ -48,7 +48,6 @@ async function loadProfile() {
 
                 order[0].cart.forEach(async (pokemon) => {
                     let pokemonData = await getPokemonBasicDataById(pokemon.pokemonId)
-                    console.log(pokemonData);
                     let entry = `
                     <div class="thumbnail-container" style="text-align: center; display: inline-block">
                         <img src="${pokemonData.sprite}" alt="${pokemonData.name}" style="width:100%"
