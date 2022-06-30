@@ -1,5 +1,7 @@
 var userId = getUserId();
 
+var isAdmin = isAdmin();
+
 // Gets the basic data needed to display a pokemon to the client.
 async function getPokemonBasicDataById(id) {
     let pokemon = await loadPokemonById(id);

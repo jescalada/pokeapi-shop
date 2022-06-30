@@ -47,7 +47,8 @@ const usersSchema = new mongoose.Schema({
     past_orders: [
         [Object]
     ],
-    timeline: [Object]
+    timeline: [Object],
+    isAdmin: Boolean
 }, {
     collection: 'users'
 })
@@ -99,6 +100,7 @@ app.post('/login', async (req, res) => {
         if (user) {
             req.session.user = user
             req.session.user_id = user.user_id
+            req.session.isAdmin = user.isAdmin
         }
     })
     req.session.authenticated = req.session.user != null
